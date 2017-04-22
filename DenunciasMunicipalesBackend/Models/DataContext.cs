@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace DenunciasMunicipalesBackend.Models
 {
@@ -8,6 +9,11 @@ namespace DenunciasMunicipalesBackend.Models
         {
         }
 
-        public System.Data.Entity.DbSet<DenunciasMunicipalesBackend.Models.Complaint> Complaints { get; set; }
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+        }
+
+        public DbSet<Complaint> Complaints { get; set; }
     }
 }
