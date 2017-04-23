@@ -23,6 +23,7 @@ namespace DenunciasMunicipalesBackend.Models
 
         public string Image { get; set; }
 
+        [Display(Name = "Imágen")]
         public HttpPostedFileBase ImageFile { get; set; }
     }
 }
