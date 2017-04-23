@@ -48,9 +48,6 @@ namespace DenunciasMunicipalesBackend.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ComplaintId,Description,CaseAddress,Date,CreatedBy,Image")] Complaint complaint)
         {
-            complaint.Date = DateTime.Today;
-            complaint.CreatedBy = "Alfredo Martinez";
-
             if (ModelState.IsValid)
             {
                 db.Complaints.Add(complaint);
