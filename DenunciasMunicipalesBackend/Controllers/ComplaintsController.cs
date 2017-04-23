@@ -4,6 +4,7 @@ using System.Net;
 using System.Web.Mvc;
 using DenunciasMunicipalesBackend.Models;
 using System;
+using DenunciasMunicipalesBackend.Classes;
 
 namespace DenunciasMunicipalesBackend.Controllers
 {
@@ -45,19 +46,31 @@ namespace DenunciasMunicipalesBackend.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Complaint complaint)
+        public ActionResult Create(ComplaintView complaintView)
         {
-            complaint.Date = DateTime.Today;
-            complaint.CreatedBy = "Alfredo Martinez";
+            complaintView.Date = DateTime.Today;
+            complaintView.CreatedBy = "Alfredo Martinez";
 
             if (ModelState.IsValid)
             {
+                var image = string.Empty;
+                var folder = "~/Content/Images";
+
+                if (complaintView.ImageFile != null)
+                {
+                    image = FilesHelper.UploadPhoto(complaintView.ImageFile, folder);
+                    image = string.Format("{0}/{1}", folder, image);
+                }
+
+                var complaint = ToComplaint(complaintView);
+                complaint.Image = image;
+
                 db.Complaints.Add(complaint);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(complaint);
+            return View(complaintView);
         }
 
         public ActionResult Edit(int? id)
@@ -126,6 +139,19 @@ namespace DenunciasMunicipalesBackend.Controllers
             }
 
             base.Dispose(disposing);
+        }
+
+        private Complaint ToComplaint(ComplaintView complaintView)
+        {
+            return new Complaint
+            {
+                ComplaintId = complaintView.ComplaintId,
+                Description = complaintView.Description,
+                CaseAddress = complaintView.CaseAddress,
+                Date = complaintView.Date,
+                CreatedBy = complaintView.CreatedBy,
+                Image = complaintView.Image,
+            };
         }
     }
 }

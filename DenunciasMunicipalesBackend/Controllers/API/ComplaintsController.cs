@@ -1,7 +1,11 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using DenunciasMunicipalesBackend.Models;
@@ -12,16 +16,17 @@ namespace DenunciasMunicipalesBackend.Controllers.API
     {
         private DataContext db = new DataContext();
 
+        // GET: api/Complaints
         public IQueryable<Complaint> GetComplaints()
         {
             return db.Complaints;
         }
 
+        // GET: api/Complaints/5
         [ResponseType(typeof(Complaint))]
         public IHttpActionResult GetComplaint(int id)
         {
             Complaint complaint = db.Complaints.Find(id);
-
             if (complaint == null)
             {
                 return NotFound();
@@ -30,6 +35,7 @@ namespace DenunciasMunicipalesBackend.Controllers.API
             return Ok(complaint);
         }
 
+        // PUT: api/Complaints/5
         [ResponseType(typeof(void))]
         public IHttpActionResult PutComplaint(int id, Complaint complaint)
         {
@@ -64,6 +70,7 @@ namespace DenunciasMunicipalesBackend.Controllers.API
             return StatusCode(HttpStatusCode.NoContent);
         }
 
+        // POST: api/Complaints
         [ResponseType(typeof(Complaint))]
         public IHttpActionResult PostComplaint(Complaint complaint)
         {
@@ -78,6 +85,7 @@ namespace DenunciasMunicipalesBackend.Controllers.API
             return CreatedAtRoute("DefaultApi", new { id = complaint.ComplaintId }, complaint);
         }
 
+        // DELETE: api/Complaints/5
         [ResponseType(typeof(Complaint))]
         public IHttpActionResult DeleteComplaint(int id)
         {
@@ -99,7 +107,6 @@ namespace DenunciasMunicipalesBackend.Controllers.API
             {
                 db.Dispose();
             }
-
             base.Dispose(disposing);
         }
 
