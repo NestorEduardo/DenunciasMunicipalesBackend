@@ -1,53 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using DenunciasMunicipalesBackend.Models;
+using System;
 
 namespace DenunciasMunicipalesBackend.Controllers
 {
     public class ComplaintsController : Controller
     {
-        private DataContext db = new DataContext();
+        private DataContext db;
 
-        // GET: Complaints
-        public ActionResult Index()
+        public ComplaintsController()
         {
-            return View(db.Complaints.ToList());
+            db = new DataContext();
         }
 
-        // GET: Complaints/Details/5
+        public ActionResult Index()
+        {
+            return View(db.Complaints.OrderBy(c => c.Date).ToList());
+        }
+
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Complaint complaint = db.Complaints.Find(id);
+
             if (complaint == null)
             {
                 return HttpNotFound();
             }
+
             return View(complaint);
         }
 
-        // GET: Complaints/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Complaints/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ComplaintId,Description,CaseAddress,Date,CreatedBy,Image")] Complaint complaint)
+        public ActionResult Create(Complaint complaint)
         {
+            complaint.Date = DateTime.Today;
+            complaint.CreatedBy = "Alfredo Martinez";
+
             if (ModelState.IsValid)
             {
                 db.Complaints.Add(complaint);
@@ -58,27 +60,26 @@ namespace DenunciasMunicipalesBackend.Controllers
             return View(complaint);
         }
 
-        // GET: Complaints/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Complaint complaint = db.Complaints.Find(id);
+
             if (complaint == null)
             {
                 return HttpNotFound();
             }
+
             return View(complaint);
         }
 
-        // POST: Complaints/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ComplaintId,Description,CaseAddress,Date,CreatedBy,Image")] Complaint complaint)
+        public ActionResult Edit(Complaint complaint)
         {
             if (ModelState.IsValid)
             {
@@ -86,25 +87,27 @@ namespace DenunciasMunicipalesBackend.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+
             return View(complaint);
         }
 
-        // GET: Complaints/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Complaint complaint = db.Complaints.Find(id);
+
             if (complaint == null)
             {
                 return HttpNotFound();
             }
+
             return View(complaint);
         }
 
-        // POST: Complaints/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
@@ -121,6 +124,7 @@ namespace DenunciasMunicipalesBackend.Controllers
             {
                 db.Dispose();
             }
+
             base.Dispose(disposing);
         }
     }
