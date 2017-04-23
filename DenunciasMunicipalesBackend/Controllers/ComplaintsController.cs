@@ -46,10 +46,10 @@ namespace DenunciasMunicipalesBackend.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ComplaintId,Description,CaseAddress,Date,CreatedBy")] Complaint complaint)
+        public ActionResult Create([Bind(Include = "ComplaintId,Description,CaseAddress,Date,CreatedBy,Image")] Complaint complaint)
         {
-            complaint.CreatedBy = "Alfredo Martínez";
-            complaint.Date = DateTime.Now;
+            complaint.Date = DateTime.Today;
+            complaint.CreatedBy = "Alfredo Martinez";
 
             if (ModelState.IsValid)
             {
@@ -81,7 +81,7 @@ namespace DenunciasMunicipalesBackend.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ComplaintId,Description,CaseAddress,Date,CreatedBy")] Complaint complaint)
+        public ActionResult Edit([Bind(Include = "ComplaintId,Description,CaseAddress,Date,CreatedBy,Image")] Complaint complaint)
         {
             if (ModelState.IsValid)
             {

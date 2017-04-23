@@ -20,5 +20,7 @@ namespace DenunciasMunicipalesBackend.Models
 
         [Display(Name = "Creado por")]
         public string CreatedBy { get; set; }
+
+        public string Image { get; set; }
     }
 }
