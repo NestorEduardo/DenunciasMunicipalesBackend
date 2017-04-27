@@ -9,6 +9,8 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using DenunciasMunicipalesBackend.Models;
+using System.IO;
+using DenunciasMunicipalesBackend.Classes;
 
 namespace DenunciasMunicipalesBackend.Controllers.API
 {
@@ -72,17 +74,46 @@ namespace DenunciasMunicipalesBackend.Controllers.API
 
         // POST: api/Complaints
         [ResponseType(typeof(Complaint))]
-        public IHttpActionResult PostComplaint(Complaint complaint)
+        public IHttpActionResult PostComplaint(ComplaintRequest complaintRequest)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            if (complaintRequest.ImageArray != null && complaintRequest.ImageArray.Length > 0)
+            {
+                var stream = new MemoryStream(complaintRequest.ImageArray);
+                var guid = Guid.NewGuid().ToString();
+                var file = string.Format($"{guid}.jpg");
+                var folder = "~/Content/Images";
+                var fullPath = string.Format("{0}/{1}", folder, file);
+                var response = FilesHelper.UploadPhoto(stream, folder, file);
+
+                if (response)
+                {
+                    complaintRequest.Image = fullPath;
+                }
+            }
+
+            var complaint = ToComplaint(complaintRequest);
             db.Complaints.Add(complaint);
             db.SaveChanges();
 
             return CreatedAtRoute("DefaultApi", new { id = complaint.ComplaintId }, complaint);
+        }
+
+        private Complaint ToComplaint(ComplaintRequest complaintRequest)
+        {
+            return new Complaint
+            {
+                CaseAddress = complaintRequest.CaseAddress,
+                ComplaintId = complaintRequest.ComplaintId,
+                CreatedBy = complaintRequest.CreatedBy,
+                Date = complaintRequest.Date,
+                Description = complaintRequest.Description,
+                Image = complaintRequest.Image,
+            };
         }
 
         // DELETE: api/Complaints/5
