@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using DenunciasMunicipalesBackend.Models;
+using DenunciasMunicipalesBackend.Classes;
 
 namespace DenunciasMunicipalesBackend.Controllers.API
 {
@@ -79,8 +80,11 @@ namespace DenunciasMunicipalesBackend.Controllers.API
                 return BadRequest(ModelState);
             }
 
+            user.Password = Encrypter.Encrypt(user.Password);
             db.Users.Add(user);
             db.SaveChanges();
+
+            MailHelper.SendMail(user.Email, "Bienvenido/a", $"Hola { user.FullName}, Gracias por registrarte en Denuncias Municipales App.Con tu ayuda haremos que Santo Domingo Este sea una mejor ciudad");
 
             return CreatedAtRoute("DefaultApi", new { id = user.UserId }, user);
         }
