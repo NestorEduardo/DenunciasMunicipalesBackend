@@ -10,9 +10,12 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using DenunciasMunicipalesBackend.Models;
 using DenunciasMunicipalesBackend.Classes;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace DenunciasMunicipalesBackend.Controllers.API
 {
+    [RoutePrefix("api/Users")]
     public class UsersController : ApiController
     {
         private DataContext db = new DataContext();
@@ -20,6 +23,7 @@ namespace DenunciasMunicipalesBackend.Controllers.API
         // GET: api/Users
         public IQueryable<User> GetUsers()
         {
+            db.Configuration.ProxyCreationEnabled = false;
             return db.Users;
         }
 
@@ -35,6 +39,32 @@ namespace DenunciasMunicipalesBackend.Controllers.API
 
             return Ok(user);
         }
+
+        [HttpPost]
+        [Route("GetUserByEmail")]
+        public async Task<IHttpActionResult> GetUserByEmail(JObject form)
+        {
+            var email = string.Empty;
+            dynamic jsonObject = form;
+
+            try
+            {
+                email = jsonObject.Email.Value;
+            }
+            catch
+            {
+                return BadRequest("Incorrect call");
+            }
+
+            var user = await db.Users.Where(u => u.Email.ToLower() == email.ToLower()).FirstOrDefaultAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
+        }
+
 
         // PUT: api/Users/5
         [ResponseType(typeof(void))]
