@@ -18,6 +18,7 @@ namespace DenunciasMunicipalesBackend.Controllers.API
     {
         private DataContext db = new DataContext();
 
+        [Authorize]
         // GET: api/Complaints
         public IQueryable<Complaint> GetComplaints()
         {
@@ -25,6 +26,7 @@ namespace DenunciasMunicipalesBackend.Controllers.API
         }
 
         // GET: api/Complaints/5
+        [Authorize]
         [ResponseType(typeof(Complaint))]
         public IHttpActionResult GetComplaint(int id)
         {
@@ -39,6 +41,7 @@ namespace DenunciasMunicipalesBackend.Controllers.API
 
         // PUT: api/Complaints/5
         [ResponseType(typeof(void))]
+        [Authorize]
         public IHttpActionResult PutComplaint(int id, Complaint complaint)
         {
             if (!ModelState.IsValid)
@@ -118,6 +121,7 @@ namespace DenunciasMunicipalesBackend.Controllers.API
 
         // DELETE: api/Complaints/5
         [ResponseType(typeof(Complaint))]
+        [Authorize]
         public IHttpActionResult DeleteComplaint(int id)
         {
             Complaint complaint = db.Complaints.Find(id);

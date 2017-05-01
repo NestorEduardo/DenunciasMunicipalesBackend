@@ -8,6 +8,7 @@ using DenunciasMunicipalesBackend.Classes;
 
 namespace DenunciasMunicipalesBackend.Controllers
 {
+    [Authorize]
     public class ComplaintsController : Controller
     {
         private DataContext db;
@@ -16,6 +17,7 @@ namespace DenunciasMunicipalesBackend.Controllers
         {
             db = new DataContext();
         }
+
 
         public ActionResult Index()
         {

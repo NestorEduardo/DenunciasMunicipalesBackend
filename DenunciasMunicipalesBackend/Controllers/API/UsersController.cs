@@ -40,6 +40,34 @@ namespace DenunciasMunicipalesBackend.Controllers.API
             return Ok(user);
         }
 
+        // GET: api/Users/5
+        [ResponseType(typeof(User))]
+        public IHttpActionResult GetUser(string email, string password)
+        {
+            User user = db.Users.FirstOrDefault(u => u.Email == email);
+
+            if (user.Password == password)
+            {
+                return Ok(user);
+            }
+
+            return NotFound();
+        }
+
+        // GET: api/Users/5
+        [ResponseType(typeof(User))]
+        public IHttpActionResult GetUser(string email)
+        {
+            User user = db.Users.FirstOrDefault(u => u.Email == email);
+
+            if (user != null)
+            {
+                return Ok(user);
+            }
+
+            return NotFound();
+        }
+
         [HttpPost]
         [Route("GetUserByEmail")]
         public async Task<IHttpActionResult> GetUserByEmail(JObject form)
