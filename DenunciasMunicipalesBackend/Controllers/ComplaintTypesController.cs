@@ -7,112 +7,110 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DenunciasMunicipalesBackend.Models;
-using DenunciasMunicipalesBackend.Classes;
 
 namespace DenunciasMunicipalesBackend.Controllers
 {
-    public class UsersController : Controller
+    public class ComplaintTypesController : Controller
     {
         private DataContext db = new DataContext();
 
-        // GET: Users
+        // GET: ComplaintTypes
         public ActionResult Index()
         {
-            return View(db.Users.ToList());
+            return View(db.ComplaintTypes.ToList());
         }
 
-        // GET: Users/Details/5
+        // GET: ComplaintTypes/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = db.Users.Find(id);
-
-            if (user == null)
+            ComplaintType complaintType = db.ComplaintTypes.Find(id);
+            if (complaintType == null)
             {
                 return HttpNotFound();
             }
-            return View(user);
+            return View(complaintType);
         }
 
-        // GET: Users/Create
+        // GET: ComplaintTypes/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Users/Create
+        // POST: ComplaintTypes/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "UserId,FullName,Email,Password,Points")] User user)
+        public ActionResult Create([Bind(Include = "ComplaintTypeId,Description")] ComplaintType complaintType)
         {
             if (ModelState.IsValid)
             {
-                db.Users.Add(user);
+                db.ComplaintTypes.Add(complaintType);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(user);
+            return View(complaintType);
         }
 
-        // GET: Users/Edit/5
+        // GET: ComplaintTypes/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = db.Users.Find(id);
-            if (user == null)
+            ComplaintType complaintType = db.ComplaintTypes.Find(id);
+            if (complaintType == null)
             {
                 return HttpNotFound();
             }
-            return View(user);
+            return View(complaintType);
         }
 
-        // POST: Users/Edit/5
+        // POST: ComplaintTypes/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "UserId,FullName,Email,Password,Points")] User user)
+        public ActionResult Edit([Bind(Include = "ComplaintTypeId,Description")] ComplaintType complaintType)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(user).State = EntityState.Modified;
+                db.Entry(complaintType).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(user);
+            return View(complaintType);
         }
 
-        // GET: Users/Delete/5
+        // GET: ComplaintTypes/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = db.Users.Find(id);
-            if (user == null)
+            ComplaintType complaintType = db.ComplaintTypes.Find(id);
+            if (complaintType == null)
             {
                 return HttpNotFound();
             }
-            return View(user);
+            return View(complaintType);
         }
 
-        // POST: Users/Delete/5
+        // POST: ComplaintTypes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            User user = db.Users.Find(id);
-            db.Users.Remove(user);
+            ComplaintType complaintType = db.ComplaintTypes.Find(id);
+            db.ComplaintTypes.Remove(complaintType);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

@@ -9,8 +9,8 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using DenunciasMunicipalesBackend.Models;
-using System.IO;
 using DenunciasMunicipalesBackend.Classes;
+using System.IO;
 
 namespace DenunciasMunicipalesBackend.Controllers.API
 {
@@ -18,7 +18,6 @@ namespace DenunciasMunicipalesBackend.Controllers.API
     {
         private DataContext db = new DataContext();
 
-        [Authorize]
         // GET: api/Complaints
         public IQueryable<Complaint> GetComplaints()
         {
@@ -26,7 +25,6 @@ namespace DenunciasMunicipalesBackend.Controllers.API
         }
 
         // GET: api/Complaints/5
-        [Authorize]
         [ResponseType(typeof(Complaint))]
         public IHttpActionResult GetComplaint(int id)
         {
@@ -41,7 +39,6 @@ namespace DenunciasMunicipalesBackend.Controllers.API
 
         // PUT: api/Complaints/5
         [ResponseType(typeof(void))]
-        [Authorize]
         public IHttpActionResult PutComplaint(int id, Complaint complaint)
         {
             if (!ModelState.IsValid)
@@ -100,6 +97,9 @@ namespace DenunciasMunicipalesBackend.Controllers.API
             }
 
             var complaint = ToComplaint(complaintRequest);
+            complaint.ComplaintTypeId = 1;
+            complaint.Latitude = 0;
+            complaint.Longitude = 0;
             db.Complaints.Add(complaint);
             db.SaveChanges();
 
@@ -111,6 +111,9 @@ namespace DenunciasMunicipalesBackend.Controllers.API
             return new Complaint
             {
                 CaseAddress = complaintRequest.CaseAddress,
+                ComplaintType = complaintRequest.ComplaintType,
+                Latitude = complaintRequest.Latitude,
+                Longitude = complaintRequest.Longitude,
                 ComplaintId = complaintRequest.ComplaintId,
                 CreatedBy = complaintRequest.CreatedBy,
                 Date = complaintRequest.Date,
@@ -119,9 +122,10 @@ namespace DenunciasMunicipalesBackend.Controllers.API
             };
         }
 
+
+
         // DELETE: api/Complaints/5
         [ResponseType(typeof(Complaint))]
-        [Authorize]
         public IHttpActionResult DeleteComplaint(int id)
         {
             Complaint complaint = db.Complaints.Find(id);

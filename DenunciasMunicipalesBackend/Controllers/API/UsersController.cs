@@ -84,7 +84,7 @@ namespace DenunciasMunicipalesBackend.Controllers.API
                 return BadRequest("Incorrect call");
             }
 
-            var user = await db.Users.Where(u => u.Email.ToLower() == email.ToLower()).FirstOrDefaultAsync();
+            var user = await db.Users.Where (u => u.Email.ToLower() == email.ToLower()).FirstOrDefaultAsync();
             if (user == null)
             {
                 return NotFound();
@@ -138,7 +138,6 @@ namespace DenunciasMunicipalesBackend.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            user.Password = Encrypter.Encrypt(user.Password);
             db.Users.Add(user);
             db.SaveChanges();
 

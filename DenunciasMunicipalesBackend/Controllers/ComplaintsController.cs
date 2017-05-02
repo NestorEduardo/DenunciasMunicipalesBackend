@@ -1,51 +1,52 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Mvc;
 using DenunciasMunicipalesBackend.Models;
-using System;
 using DenunciasMunicipalesBackend.Classes;
 
 namespace DenunciasMunicipalesBackend.Controllers
 {
-    [Authorize]
     public class ComplaintsController : Controller
     {
-        private DataContext db;
+        private DataContext db = new DataContext();
 
-        public ComplaintsController()
-        {
-            db = new DataContext();
-        }
-
-
+        // GET: Complaints
         public ActionResult Index()
         {
-            return View(db.Complaints.OrderBy(c => c.Date).ToList());
+            var complaints = db.Complaints.Include(c => c.ComplaintType);
+            return View(complaints.ToList());
         }
 
+        // GET: Complaints/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
             Complaint complaint = db.Complaints.Find(id);
-
             if (complaint == null)
             {
                 return HttpNotFound();
             }
-
             return View(complaint);
         }
 
+        // GET: Complaints/Create
         public ActionResult Create()
         {
+            ViewBag.ComplaintTypeId = new SelectList(db.ComplaintTypes, "ComplaintTypeId", "Description");
             return View();
         }
 
+        // POST: Complaints/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(ComplaintView complaintView)
@@ -75,26 +76,28 @@ namespace DenunciasMunicipalesBackend.Controllers
             return View(complaintView);
         }
 
+        // GET: Complaints/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
             Complaint complaint = db.Complaints.Find(id);
-
             if (complaint == null)
             {
                 return HttpNotFound();
             }
-
+            ViewBag.ComplaintTypeId = new SelectList(db.ComplaintTypes, "ComplaintTypeId", "Description", complaint.ComplaintTypeId);
             return View(complaint);
         }
 
+        // POST: Complaints/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Complaint complaint)
+        public ActionResult Edit([Bind(Include = "ComplaintId,ComplaintTypeId,Description,CaseAddress,Date,CreatedBy,Image")] Complaint complaint)
         {
             if (ModelState.IsValid)
             {
@@ -102,27 +105,26 @@ namespace DenunciasMunicipalesBackend.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
+            ViewBag.ComplaintTypeId = new SelectList(db.ComplaintTypes, "ComplaintTypeId", "Description", complaint.ComplaintTypeId);
             return View(complaint);
         }
 
+        // GET: Complaints/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
             Complaint complaint = db.Complaints.Find(id);
-
             if (complaint == null)
             {
                 return HttpNotFound();
             }
-
             return View(complaint);
         }
 
+        // POST: Complaints/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
@@ -139,7 +141,6 @@ namespace DenunciasMunicipalesBackend.Controllers
             {
                 db.Dispose();
             }
-
             base.Dispose(disposing);
         }
 
@@ -148,6 +149,9 @@ namespace DenunciasMunicipalesBackend.Controllers
             return new Complaint
             {
                 ComplaintId = complaintView.ComplaintId,
+                ComplaintTypeId = complaintView.ComplaintTypeId,
+                Latitude = complaintView.Latitude,
+                Longitude = complaintView.Longitude,
                 Description = complaintView.Description,
                 CaseAddress = complaintView.CaseAddress,
                 Date = complaintView.Date,
