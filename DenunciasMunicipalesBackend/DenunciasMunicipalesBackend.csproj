@@ -238,7 +238,7 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Properties\PublishProfiles\DenunciasMunicipalesBackend2 - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\DenunciasMunicipalesBackend0 - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\fileupload.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

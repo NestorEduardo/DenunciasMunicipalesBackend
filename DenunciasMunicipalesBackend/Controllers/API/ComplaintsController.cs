@@ -97,9 +97,6 @@ namespace DenunciasMunicipalesBackend.Controllers.API
             }
 
             var complaint = ToComplaint(complaintRequest);
-            complaint.ComplaintTypeId = 1;
-            complaint.Latitude = 0;
-            complaint.Longitude = 0;
             db.Complaints.Add(complaint);
             db.SaveChanges();
 
